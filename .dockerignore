@@ -1,0 +1,16 @@
+.dockerignore
+.env
+.git
+.gitignore
+.vs
+.vscode
+bin/
+obj/
+
+# Exclude generated files
+*.db
+*.db-shm
+*.db-wal
+*.xlsx
+TestResults/
+logs/

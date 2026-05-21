@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gamified Questionnaire</title>
+    <meta name="description" content="A premium gamified learning and questionnaire platform">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- Auth View -->
+    <div id="auth-view" class="view active">
+        <!-- Student Auth -->
+        <div id="student-auth-card" class="glass-card">
+            <h1 class="brand-title">Quiz Platform</h1>
+            <p class="subtitle" id="student-auth-mode-text">Log in to enter the game</p>
+            <div id="student-auth-error" class="error-text"></div>
+            <input type="email" id="student-email" placeholder="Email Address" required />
+            <input type="password" id="student-password" placeholder="Password" required />
+            <button id="btn-student-login" class="btn-primary">Sign In</button>
+            <p class="toggle-text">Need an account? <span id="btn-student-register-toggle">Sign up</span></p>
+            
+            <div class="admin-access-section">
+                <hr>
+                <button id="btn-switch-to-admin" class="btn-ghost">Admin Access</button>
+            </div>
+        </div>
+
+        <!-- Admin Auth -->
+        <div id="admin-auth-card" class="glass-card admin-palette" style="display: none;">
+            <h1 class="brand-title admin-title">Admin Command</h1>
+            <p class="subtitle admin-subtitle" id="admin-auth-mode-text">Admin Access Only</p>
+            <div id="admin-auth-error" class="error-text"></div>
+            <input type="email" id="admin-email" class="admin-input" placeholder="Admin Email" required />
+            <input type="password" id="admin-password" class="admin-input" placeholder="Password" required />
+            <input type="password" id="admin-reg-secret" class="admin-input" placeholder="Master Secret Registration Key" style="display:none; border-color: rgba(239, 68, 68, 0.5);" />
+            <button id="btn-admin-login" class="btn-admin">Authenticate</button>
+            <p class="toggle-text admin-toggle-text">New administrator? <span id="btn-admin-register-toggle">Register</span></p>
+            
+            <div class="admin-access-section">
+                <hr class="admin-hr">
+                <button id="btn-switch-to-student" class="btn-ghost admin-ghost">Return to Student Portal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin View -->
+    <div id="admin-view" class="view">
+        <aside class="sidebar">
+            <h2 class="sidebar-title">Admin Panel</h2>
+            <nav>
+                <button class="nav-btn active" data-target="dashboard">Dashboard</button>
+                <button class="nav-btn" data-target="manage-catalog">Catalog</button>
+                <button class="nav-btn" data-target="manage-sessions">Sessions</button>
+                <button class="nav-btn" data-target="rankings">Evaluation Rankings</button>
+                <button class="nav-btn" data-target="export-results">Export Results</button>
+                <button class="nav-btn" id="btn-logout-admin">Logout</button>
+            </nav>
+        </aside>
+        <main class="dashboard-content">
+            <div class="top-nav">
+                <h3>Welcome back, Admin</h3>
+            </div>
+            <div id="admin-dashboard" class="admin-section active">
+                <div class="stats-grid">
+                    <div class="stat-card"><h3>Users</h3><p id="stat-users">0</p></div>
+                    <div class="stat-card"><h3>Questionnaires</h3><p id="stat-quests">0</p></div>
+                </div>
+            </div>
+            <div id="admin-manage-catalog" class="admin-section">
+                <h2>Manage Catalog</h2>
+                <div style="display:flex; flex-direction:column; gap:15px; margin-bottom:30px; margin-top:20px;">
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="in-area-name" class="admin-input" placeholder="New Area Name" style="width:200px; padding:10px; margin:0;" />
+                        <button id="btn-create-area" class="btn-secondary">Add Area</button>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="in-subarea-name" class="admin-input" placeholder="New SubArea Name" style="width:200px; padding:10px; margin:0;" />
+                        <input type="number" id="in-subarea-areaid" class="admin-input" placeholder="Area ID" style="width:100px; padding:10px; margin:0;" />
+                        <button id="btn-create-subarea" class="btn-secondary">Add SubArea</button>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="in-quest-title" class="admin-input" placeholder="New Questionnaire Title" style="width:310px; padding:10px; margin:0;" />
+                        <button id="btn-create-quest" class="btn-secondary">Add Quest</button>
+                    </div>
+                    <div style="display:flex; flex-wrap:wrap; gap:10px; background:rgba(0,0,0,0.2); padding:10px; border-radius:8px;">
+                        <input type="number" id="in-q-questid" class="admin-input" placeholder="Quest ID" style="width:100px; padding:10px; margin:0;" />
+                        <input type="number" id="in-q-subid" class="admin-input" placeholder="SubArea ID" style="width:100px; padding:10px; margin:0;" />
+                        <input type="text" id="in-q-text" class="admin-input" placeholder="Question Text" style="width:250px; padding:10px; margin:0;" />
+                        <input type="text" id="in-q-opts" class="admin-input" placeholder="Opts (comma separated)" style="flex:1; padding:10px; margin:0;" />
+                        <input type="text" id="in-q-correct" class="admin-input" placeholder="Correct" style="width:120px; padding:10px; margin:0;" />
+                        <button id="btn-add-question" class="btn-secondary">Add Question</button>
+                    </div>
+                </div>
+                <div id="catalog-list" class="list-container"></div>
+            </div>
+            <div id="admin-manage-sessions" class="admin-section">
+                <h2>Manage Sessions & Mappings</h2>
+                <div style="display:flex; flex-direction:column; gap:15px; margin-bottom:30px; margin-top:20px;">
+                    <div style="display:flex; gap:10px;">
+                        <input type="text" id="in-session-name" class="admin-input" placeholder="New Session Name" style="width:200px; padding:10px; margin:0;" />
+                        <button id="btn-create-session" class="btn-secondary">Add Session</button>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <input type="number" id="in-map-sessid" class="admin-input" placeholder="Session ID" style="width:120px; padding:10px; margin:0;" />
+                        <input type="number" id="in-map-userid" class="admin-input" placeholder="User ID" style="width:120px; padding:10px; margin:0;" />
+                        <button id="btn-map-user" class="btn-secondary">Assign User to Session</button>
+                    </div>
+                    <div style="display:flex; gap:10px;">
+                        <input type="number" id="in-mapq-sessid" class="admin-input" placeholder="Session ID" style="width:120px; padding:10px; margin:0;" />
+                        <input type="number" id="in-mapq-questid" class="admin-input" placeholder="Quest ID" style="width:120px; padding:10px; margin:0;" />
+                        <button id="btn-map-quest" class="btn-secondary">Assign Quest to Session</button>
+                    </div>
+                </div>
+                <!-- ID Reference Tables for Mapping -->
+                <div style="display:flex; gap:20px; margin-bottom:20px;">
+                    <div id="maphelp-users" style="flex:1; background:rgba(0,0,0,0.3); padding:10px; border-radius:8px; font-size:0.85rem; max-height:200px; overflow-y:auto;"></div>
+                    <div id="maphelp-quests" style="flex:1; background:rgba(0,0,0,0.3); padding:10px; border-radius:8px; font-size:0.85rem; max-height:200px; overflow-y:auto;"></div>
+                </div>
+                <div id="session-list" class="list-container"></div>
+                <div id="session-list" class="list-container"></div>
+            </div>
+            <div id="admin-rankings" class="admin-section">
+                <h2>Evaluation Rankings</h2>
+                <div id="rankings-list" style="margin-top:20px;"></div>
+            </div>
+            <div id="admin-export" class="admin-section">
+                <h2>Export Results</h2>
+                <button id="btn-download-excel" class="btn-primary" style="margin-top:20px;">Download Excel Report</button>
+            </div>
+        </main>
+    </div>
+
+    <!-- Student View : Game Dashboard -->
+    <div id="student-view" class="view">
+        <header class="game-header">
+            <h2 class="game-title">My Quests</h2>
+            <button id="btn-logout-student" class="btn-ghost">Logout</button>
+        </header>
+        <div class="quests-container" id="student-sessions-list">
+            <!-- Render sessions and questionnaires here -->
+        </div>
+    </div>
+
+    <!-- Actual Game UI -->
+    <div id="game-ui-view" class="view">
+        <div class="game-header-bar">
+            <div class="progress-container">
+                <div class="progress-bar" id="game-progress"></div>
+            </div>
+            <div class="timer" id="game-time">00:00</div>
+            <button id="btn-skip" class="btn-game-ghost">Skip</button>
+        </div>
+        <div class="game-viewport">
+            <div class="question-card" id="question-card">
+                <h1 id="q-text">Loading question...</h1>
+                <div id="q-options" class="options-grid"></div>
+                <div class="gamification-stats">Score: <span id="q-score">0</span></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/app.js"></script>
+</body>
+</html>
