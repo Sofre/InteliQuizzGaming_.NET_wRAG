@@ -1,6 +1,6 @@
-# RAG-Augmented Quiz Game Platform
+# InteliQuiz Game Platform 
 
-Welcome to the **RAG-Augmented Quiz Game Platform**! This is a robust gamified questionnaire system built for tracking student engagement through interactive quizzes and AI-assisted content workflows. It uses a dual-role architecture, allowing Administrators to manage structured learning catalogs while Students experience a fluid game-like interface.
+Welcome to the **Inteli Quiz Game Platform**! This is a robust gamified questionnaire system built for tracking student engagement through interactive quizzes and AI-assisted content workflows via RAG. It uses a dual-role architecture, allowing Administrators to manage structured learning catalogs while Students experience a fluid game-like interface.
 
 ## 🌟 Core Features
 
