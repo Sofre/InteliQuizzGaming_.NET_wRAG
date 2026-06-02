@@ -2,7 +2,7 @@
 
 Welcome to the **Inteli Quiz Game Platform**! This is a robust gamified questionnaire system built for tracking student engagement through interactive quizzes and AI-assisted content workflows via RAG. It uses a dual-role architecture, allowing Administrators to manage structured learning catalogs while Students experience a fluid game-like interface.
 
-## 🌟 Core Features
+##  Core Features
 
 - **Gamified Student Experience**: Students navigate questions linearly with modern tracking elements like progress bars, live timers, accurate score computations, and smooth micro-animations.
 - **Dual-Role Authentication**: Dedicated portals for Students and Admins, dynamically displaying custom themes (`glassmorphism`/blue hues for students, sharp dark/amber styles for admins).
@@ -13,7 +13,7 @@ Welcome to the **Inteli Quiz Game Platform**! This is a robust gamified question
 - **Session Engineering**: Administrators can bind specific sets of Students and Questionnaires into unique `Sessions` representing student cohorts, allowing for complex segmentation.
 - **Reporting Engine**: One-click extraction of student results, aggregating metrics natively to an exported Excel (`.xlsx`) sheet.
 
-## 🛠️ Technology Stack
+##  Technology Stack
 
 - **Backend Protocol**: .NET 10.0 Web API 
 - **Database Architecture**: Entity Framework Core utilizing SQLite (`quizgame.db`)
@@ -23,7 +23,7 @@ Welcome to the **Inteli Quiz Game Platform**! This is a robust gamified question
 - **Frontend Core**: Vue 3 (CDN), HTML5, CSS3, and JavaScript (ES6+)
 - **Deployment**: Highly portable via native Multi-stage Docker configurations.
 
-## 🚀 How to Run (Development)
+##  How to Run 
 
 1. **Install Prerequisites**: Verify the .NET SDK (8/9/10) is installed.
 2. **Navigate** into the project folder (`QuizGamePlatform/`) using PowerShell or your terminal.
@@ -33,7 +33,7 @@ Welcome to the **Inteli Quiz Game Platform**! This is a robust gamified question
    ```
 4. **Access Platform**: Open your Web Browser and navigate to `http://localhost:5292` (or the port specified in your output).
 
-## 🐳 How to Run (Docker/Production)
+## 🐳 (Docker/Production Deployment ) 
 
 You can containerize this entire platform (the API, SQLite Database, and Frontend) within a self-sufficient Docker container to leave running permanently or host anywhere.
 
@@ -48,7 +48,7 @@ You can containerize this entire platform (the API, SQLite Database, and Fronten
    ```
 4. **Access the Application**: Open your browser and navigate to `http://localhost:8080`.
 
-## 🧪 Built-in Demo Credentials
+## Built-in Demo Credentials
 
 The SQLite database is seeded with dummy data at startup to allow instant evaluation geometry. Jump right into the action using:
 - **Admin Command Center**: `admin@quiz.com` | Password: `admin123`
