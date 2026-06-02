@@ -4,7 +4,41 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using QuizGamePlatform.Data;
 using QuizGamePlatform.Models;
+using QuizGamePlatform.Services;
 using System.Text;
+
+var dotEnvPath = Path.Combine(Directory.GetCurrentDirectory(), ".env");
+if (File.Exists(dotEnvPath))
+{
+    foreach (var rawLine in File.ReadAllLines(dotEnvPath))
+    {
+        var line = rawLine.Trim();
+        if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#", StringComparison.Ordinal))
+        {
+            continue;
+        }
+
+        var separatorIndex = line.IndexOf('=');
+        if (separatorIndex <= 0)
+        {
+            continue;
+        }
+
+        var key = line[..separatorIndex].Trim();
+        var value = line[(separatorIndex + 1)..].Trim();
+
+        if (value.Length >= 2 && value.StartsWith('"') && value.EndsWith('"'))
+        {
+            value = value[1..^1];
+        }
+
+        // Keep OS-level environment variables as highest priority.
+        if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable(key)))
+        {
+            Environment.SetEnvironmentVariable(key, value);
+        }
+    }
+}
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +49,10 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 // Configure SQLite DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Configure AI Services
+builder.Services.AddHttpClient<IAIService, OpenAIService>();
+builder.Services.AddScoped<IPersonalizationService, PersonalizationService>();
 
 // Configure JWT Authentication
 var jwtKey = builder.Configuration["Jwt:Key"] ?? "FallbackSuperSecretKey_1234567890";
@@ -69,9 +107,16 @@ using (var scope = app.Services.CreateScope())
         context.Users.AddRange(student, admin);
         context.SaveChanges();
 
+        // Create default Areas and SubAreas for seed questions
+        var computerScience = new Area { Name = "Computer Science", Description = "General CS topics" };
+        var webDev = new SubArea { Name = "Web Development", Area = computerScience };
+        var programming = new SubArea { Name = "Programming Fundamentals", Area = computerScience };
+        context.Areas.Add(computerScience);
+        context.SaveChanges();
+
         var q = new Questionnaire { Title = "Programming Basics", ThemeColor = "#10b981", BackgroundColor = "#022c22" };
-        var q1 = new Question { Text = "What does HTML stand for?", Options = "A. Hyper Text Markup Language,B. High Text Machine Language,C. Hyperloop Machine Language", CorrectAnswer = "A. Hyper Text Markup Language", Points = 10 };
-        var q2 = new Question { Text = "Is C# an Object Oriented language?", Options = "Yes,No", CorrectAnswer = "Yes", Points = 15 };
+        var q1 = new Question { Text = "What does HTML stand for?", Options = "A. Hyper Text Markup Language,B. High Text Machine Language,C. Hyperloop Machine Language", CorrectAnswer = "A. Hyper Text Markup Language", Points = 10, SubAreaId = webDev.Id };
+        var q2 = new Question { Text = "Is C# an Object Oriented language?", Options = "Yes,No", CorrectAnswer = "Yes", Points = 15, SubAreaId = programming.Id };
         q.Questions.Add(q1); q.Questions.Add(q2);
         context.Questionnaires.Add(q);
         context.SaveChanges();

@@ -14,6 +14,7 @@ public class AppDbContext : DbContext
     public DbSet<Question> Questions { get; set; }
     public DbSet<Session> Sessions { get; set; }
     public DbSet<Answer> Answers { get; set; }
+    public DbSet<QuestionEmbedding> QuestionEmbeddings { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

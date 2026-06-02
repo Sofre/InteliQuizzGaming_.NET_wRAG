@@ -7,3 +7,6 @@ obj/
 .vscode/
 appsettings.Development.json
 build_errors.txt
+.env
+.env.*
+!.env.example

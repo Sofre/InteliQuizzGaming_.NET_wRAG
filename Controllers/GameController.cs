@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuizGamePlatform.Data;
 using QuizGamePlatform.Models;
+using QuizGamePlatform.Services;
 using System.Security.Claims;
 
 namespace QuizGamePlatform.Controllers;
@@ -13,10 +14,12 @@ namespace QuizGamePlatform.Controllers;
 public class GameController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly IPersonalizationService _personalizationService;
 
-    public GameController(AppDbContext context)
+    public GameController(AppDbContext context, IPersonalizationService personalizationService)
     {
         _context = context;
+        _personalizationService = personalizationService;
     }
 
     private int GetCurrentUserId() => int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
@@ -97,5 +100,86 @@ public class GameController : ControllerBase
         await _context.SaveChangesAsync();
 
         return Ok(new { isCorrect, pointsEarned = points, correctAnswer = req.IsSkipped ? question.CorrectAnswer : null });
+    }
+
+    // ========== RAG-POWERED PERSONALIZATION FEATURES ==========
+
+    [HttpGet("my-weak-areas")]
+    public async Task<IActionResult> GetMyWeakAreas()
+    {
+        var userId = GetCurrentUserId();
+        var weakAreas = await _personalizationService.GetWeakSubAreasAsync(userId);
+        
+        return Ok(new
+        {
+            weakAreas = weakAreas,
+            message = weakAreas.Any() 
+                ? $"Found {weakAreas.Count} weak areas that need practice" 
+                : "Great! No weak areas detected. You're performing well!"
+        });
+    }
+
+    [HttpPost("personal-practice-quiz")]
+    public async Task<IActionResult> GeneratePersonalPracticeQuiz([FromBody] PersonalQuizRequest? request = null)
+    {
+        var userId = GetCurrentUserId();
+        var count = request?.QuestionCount ?? 15;
+
+        // RAG: Get personalized questions using semantic search
+        var personalizedQuestions = await _personalizationService.GetPersonalizedQuestionsAsync(userId, count);
+
+        if (!personalizedQuestions.Any())
+        {
+            return Ok(new
+            {
+                message = "No personalized questions available. Try answering more questions first!",
+                questions = new List<object>()
+            });
+        }
+
+        // Create or update a "Personal Practice" questionnaire for this user
+        var practiceQuestionnaire = await _context.Questionnaires
+            .FirstOrDefaultAsync(q => q.Title == $"Personal Practice - User {userId}");
+
+        if (practiceQuestionnaire == null)
+        {
+            practiceQuestionnaire = new Questionnaire
+            {
+                Title = $"Personal Practice - User {userId}",
+                Description = "AI-generated personalized practice based on your weak areas",
+                ThemeColor = "#f59e0b",
+                BackgroundColor = "#fffbeb"
+            };
+            _context.Questionnaires.Add(practiceQuestionnaire);
+            await _context.SaveChangesAsync();
+        }
+
+        return Ok(new
+        {
+            questionnaireId = practiceQuestionnaire.Id,
+            questionnaire = new
+            {
+                practiceQuestionnaire.Id,
+                practiceQuestionnaire.Title,
+                practiceQuestionnaire.Description,
+                practiceQuestionnaire.ThemeColor,
+                practiceQuestionnaire.BackgroundColor
+            },
+            questions = personalizedQuestions.Select(q => new
+            {
+                q.Id,
+                q.Text,
+                q.Options,
+                q.Points,
+                SubAreaId = q.SubAreaId,
+                SubAreaName = q.SubArea?.Name
+            }).ToList(),
+            message = $"Generated {personalizedQuestions.Count} personalized questions targeting your weak areas"
+        });
+    }
+
+    public class PersonalQuizRequest
+    {
+        public int QuestionCount { get; set; } = 15;
     }
 }

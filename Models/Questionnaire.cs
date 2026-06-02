@@ -31,7 +31,11 @@ public class Question
     public int QuestionnaireId { get; set; }
     public Questionnaire? Questionnaire { get; set; }
     
-    // Admin-defined sub-area for this question
-    public int? SubAreaId { get; set; }
+    // Admin-defined sub-area for this question (REQUIRED for AI features)
+    public int SubAreaId { get; set; }
     public SubArea? SubArea { get; set; }
+    
+    // AI-related fields
+    public bool IsAIGenerated { get; set; } = false;
+    public bool IsApproved { get; set; } = true; // Default true for manually created questions
 }

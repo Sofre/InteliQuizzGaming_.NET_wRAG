@@ -1,12 +1,15 @@
-# Quiz Game Platform
+# RAG-Augmented Quiz Game Platform
 
-Welcome to the **Quiz Game Platform**! This is a robust Gamified Questionnaire System built for tracking student engagement through interactive, visually stunning quizzes. It was engineered with a dual-role architecture, allowing Administrators to effortlessly manage large structures of learning material, while Students experience a fluid, game-like interface.
+Welcome to the **RAG-Augmented Quiz Game Platform**! This is a robust gamified questionnaire system built for tracking student engagement through interactive quizzes and AI-assisted content workflows. It uses a dual-role architecture, allowing Administrators to manage structured learning catalogs while Students experience a fluid game-like interface.
 
 ## 🌟 Core Features
 
 - **Gamified Student Experience**: Students navigate questions linearly with modern tracking elements like progress bars, live timers, accurate score computations, and smooth micro-animations.
 - **Dual-Role Authentication**: Dedicated portals for Students and Admins, dynamically displaying custom themes (`glassmorphism`/blue hues for students, sharp dark/amber styles for admins).
 - **Dynamic Catalog Administration**: Admins can construct nested `Areas`, `SubAreas`, and rapidly generate `Questionnaires` and isolated `Questions`. 
+- **RAG-Augmented AI Generation**: Admins can index questions into embedding memory, retrieve semantically similar context, and generate higher-quality AI questions per SubArea.
+- **AI Review Pipeline**: Generated questions enter pending review and require Admin approve/reject moderation before joining active quizzes.
+- **Personalized Practice via Weak Areas**: Student weak subdomains are detected and used to build semantically targeted practice quizzes.
 - **Session Engineering**: Administrators can bind specific sets of Students and Questionnaires into unique `Sessions` representing student cohorts, allowing for complex segmentation.
 - **Reporting Engine**: One-click extraction of student results, aggregating metrics natively to an exported Excel (`.xlsx`) sheet.
 
@@ -15,8 +18,9 @@ Welcome to the **Quiz Game Platform**! This is a robust Gamified Questionnaire S
 - **Backend Protocol**: .NET 10.0 Web API 
 - **Database Architecture**: Entity Framework Core utilizing SQLite (`quizgame.db`)
 - **Authentication Mechanism**: JWT (JSON Web Token) Bearer Authorization
+- **AI / RAG Layer**: OpenRouter (`text-embedding-3-small`, `gpt-4o-mini`) with cosine-similarity retrieval
 - **Reporting Generator**: ClosedXML
-- **Frontend Core**: Vanilla HTML5, CSS3, and JavaScript (ES6+). No heavy frameworks involved, ensuring ultra-low latency DOM manipulation and highly responsive CSS rendering.
+- **Frontend Core**: Vue 3 (CDN), HTML5, CSS3, and JavaScript (ES6+)
 - **Deployment**: Highly portable via native Multi-stage Docker configurations.
 
 ## 🚀 How to Run (Development)
